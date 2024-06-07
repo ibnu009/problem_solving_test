@@ -5,48 +5,51 @@ void main() {
   print(highestPalindrome(sample, n, k)); // Output: 3993
 }
 
-String highestPalindrome(String s, int n, int k) {
+String highestPalindrome(String originalString, int length, int allowedChanges) {
 
-  void solve(List<String> sList, int end, int left, int right, int changes) {
-    if (changes == 0) return;
-    if (left < 0 || right > end) return;
-    if (sList[left] != sList[right]) {
-      solve(sList, end, left - 1, right + 1, changes - 1);
-      if (changes > 0 && sList[left] != '9' && sList[right] != '9') {
-        sList[left] = '9';
-        sList[right] = '9';
+  void modifyString(List<String> characters, int endIndex, int leftIndex, int rightIndex, int changesLeft) {
+    if (changesLeft == 0) return;
+    if (leftIndex < 0 || rightIndex > endIndex) return;
+
+    if (characters[leftIndex] != characters[rightIndex]) {
+      modifyString(characters, endIndex, leftIndex - 1, rightIndex + 1, changesLeft - 1);
+            if (changesLeft > 0 && characters[leftIndex] != '9' && characters[rightIndex] != '9') {
+        characters[leftIndex] = '9';
+        characters[rightIndex] = '9';
         return;
       } else {
-        sList[left] = sList[left].compareTo(sList[right]) > 0 ? sList[left] : sList[right];
-        sList[right] = sList[left];
+        characters[leftIndex] = characters[leftIndex].compareTo(characters[rightIndex]) > 0 ? characters[leftIndex] : characters[rightIndex];
+        characters[rightIndex] = characters[leftIndex];
       }
     } else {
-      solve(sList, end, left - 1, right + 1, changes);
-      if (changes > 1 && sList[left] != '9') {
-        sList[left] = '9';
-        sList[right] = '9';
+      modifyString(characters, endIndex, leftIndex - 1, rightIndex + 1, changesLeft);
+      if (changesLeft > 1 && characters[leftIndex] != '9') {
+        characters[leftIndex] = '9';
+        characters[rightIndex] = '9';
+        changesLeft -= 2;
         return;
       }
     }
-    if (left == right && changes > 0 && sList[left] != '9') {
-      sList[left] = '9';
+    if (leftIndex == rightIndex && changesLeft > 0 && characters[leftIndex] != '9') {
+      characters[leftIndex] = '9';
     }
   }
 
-  bool isPalindrome(String s, int start, int end) {
-    if (start >= end) return true;
-    if (s[start] != s[end]) return false;
-    return isPalindrome(s, start + 1, end - 1);
+  bool isPalindrome(String string, int startIndex, int endIndex) {
+    if (startIndex >= endIndex) return true;
+    if (string[startIndex] != string[endIndex]) return false;
+    return isPalindrome(string, startIndex + 1, endIndex - 1);
   }
 
-  List<String> sList = s.split('');
-  int left = (n - 1) ~/ 2;
-  int right = n ~/ 2;
-  --n;
-  solve(sList, n, left, right, k);
-  s = sList.join('');
-  if (isPalindrome(s, 0, n))
-    return s;
+  List<String> characters = originalString.split('');
+  int leftIndex = (length - 1) ~/ 2;
+  int rightIndex = length ~/ 2;
+  --length;
+  modifyString(characters, length, leftIndex, rightIndex, allowedChanges);
+  originalString = characters.join('');
+  
+  if (isPalindrome(originalString, 0, length))
+    return originalString;
   else
     return "-1";
 }
