@@ -1,55 +1,64 @@
 void main() {
-  String sample = '3943';
-  int n = sample.length;
+  String sample1 = '3943';
+  String sample2 = '932239';
+  String sample3 = '1234';
+
+  int n1 = sample1.length;
+  int n2 = sample2.length;
+  int n3 = sample3.length;
+
   int k = 1;
-  print(highestPalindrome(sample, n, k)); // Output: 3993
+  int k2 = 2;
+
+  print(highestPalindrome(sample1, n1, k)); // Output: 3993
+  print(highestPalindrome(sample2, n2, k2)); // Output: 992299
+  print(highestPalindrome(sample3, n3, k)); // Output: -1
 }
 
-String highestPalindrome(String originalString, int length, int allowedChanges) {
+String highestPalindrome(String inputString, int length, int allowedChanges) {
+  List<String> characters = inputString.split('');
+  int leftIndex = 0;
+  int rightIndex = length - 1;
 
-  void modifyString(List<String> characters, int endIndex, int leftIndex, int rightIndex, int changesLeft) {
-    if (changesLeft == 0) return;
-    if (leftIndex < 0 || rightIndex > endIndex) return;
-
-    if (characters[leftIndex] != characters[rightIndex]) {
-      modifyString(characters, endIndex, leftIndex - 1, rightIndex + 1, changesLeft - 1);
-            if (changesLeft > 0 && characters[leftIndex] != '9' && characters[rightIndex] != '9') {
-        characters[leftIndex] = '9';
-        characters[rightIndex] = '9';
-        return;
-      } else {
-        characters[leftIndex] = characters[leftIndex].compareTo(characters[rightIndex]) > 0 ? characters[leftIndex] : characters[rightIndex];
-        characters[rightIndex] = characters[leftIndex];
-      }
-    } else {
-      modifyString(characters, endIndex, leftIndex - 1, rightIndex + 1, changesLeft);
-      if (changesLeft > 1 && characters[leftIndex] != '9') {
-        characters[leftIndex] = '9';
-        characters[rightIndex] = '9';
-        changesLeft -= 2;
-        return;
-      }
-    }
-    if (leftIndex == rightIndex && changesLeft > 0 && characters[leftIndex] != '9') {
-      characters[leftIndex] = '9';
-    }
-  }
-
-  bool isPalindrome(String string, int startIndex, int endIndex) {
-    if (startIndex >= endIndex) return true;
-    if (string[startIndex] != string[endIndex]) return false;
-    return isPalindrome(string, startIndex + 1, endIndex - 1);
-  }
-
-  List<String> characters = originalString.split('');
-  int leftIndex = (length - 1) ~/ 2;
-  int rightIndex = length ~/ 2;
-  --length;
-  modifyString(characters, length, leftIndex, rightIndex, allowedChanges);
-  originalString = characters.join('');
-  
-  if (isPalindrome(originalString, 0, length))
-    return originalString;
-  else
+  int differences = calculateDifferences(characters, leftIndex, rightIndex, 0);
+  if (differences > allowedChanges) {
     return "-1";
+  }
+
+  return constructHighestValuePalindrome(characters, leftIndex, rightIndex, allowedChanges);
+}
+
+int calculateDifferences(List<String> characters, int leftIndex, int rightIndex, int differences) {
+  if (leftIndex >= rightIndex) {
+    return differences;
+  }
+
+  if (characters[leftIndex] != characters[rightIndex]) {
+    differences++;
+  }
+
+  return calculateDifferences(characters, leftIndex + 1, rightIndex - 1, differences);
+}
+
+String constructHighestValuePalindrome(List<String> characters, int leftIndex, int rightIndex, int changesLeft) {
+  if (leftIndex >= rightIndex) {
+    return characters.join('');
+  }
+
+  if (characters[leftIndex] != characters[rightIndex]) {
+    if (changesLeft > 0) {
+      characters[leftIndex] = '9';
+      characters[rightIndex] = '9';
+      changesLeft--;
+    }
+  } 
+  else {
+    if (characters[leftIndex] != '9' && changesLeft > 1) {
+      characters[leftIndex] = '9';
+      characters[rightIndex] = '9';
+      changesLeft -= 2;
+    }
+  }
+
+  return constructHighestValuePalindrome(characters, leftIndex + 1, rightIndex - 1, changesLeft);
 }
