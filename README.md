@@ -1,4 +1,13 @@
-### Kompleksitas:
+### Screenshots:
+1. **Weighted String:**
+   ![Image description](./screenshot/weighted_string_ss.png)
+2. **Balanced Bracket:**
+   ![Image description](./screenshot/balanced_bracket_ss.png)
+3. **Highest Palindrome:**
+   ![Image description](./screenshot/highest_palindrome_ss.png)
+
+
+### Penjelasan Kompleksitas (Balanced Bracket):
 1. **Kompleksitas Waktu**: <br>
 Pada kode ini dilakukan iterasi melalui `string sample` dalam fungsi `isBracketBalanced`. 
 Iterasi ini memerlukan waktu sebanyak length/jumlah karakter dari `string sample` yang diberikan, yang akan dilambangkan sebagai `O(n)`,
